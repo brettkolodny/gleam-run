@@ -7,6 +7,11 @@ const getToml = (target: string) => {
  
  [dependencies]
  gleam_stdlib = "~> 0.25"
+ ${
+   target === "erlang"
+     ? 'gleam_erlang = "~> 0.17"'
+     : 'gleam_javascript = "~> 0.2.0"'
+ }
  
  [dev-dependencies]
  gleeunit = "~> 0.7"
