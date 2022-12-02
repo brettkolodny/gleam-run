@@ -26,8 +26,6 @@ const main = async () => {
     }
   }
 
-  console.log(target);
-
   const fileContents = await Deno.readTextFile(gleamFilePath);
 
   const tempProjectPath = await Deno.makeTempDir();
