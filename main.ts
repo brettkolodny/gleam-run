@@ -1,18 +1,32 @@
-const GLEAM_TOML = `
-name = "temp"
-version = "0.1.0"
-
-target = "javascript"
-
-[dependencies]
-gleam_stdlib = "~> 0.25"
-
-[dev-dependencies]
-gleeunit = "~> 0.7"
-`;
+const getToml = (target: string) => {
+  return `
+ name = "temp"
+ version = "0.1.0"
+ 
+ target = "${target}"
+ 
+ [dependencies]
+ gleam_stdlib = "~> 0.25"
+ 
+ [dev-dependencies]
+ gleeunit = "~> 0.7"
+ `;
+};
 
 const main = async () => {
   const gleamFilePath = Deno.args[0];
+  const targetArg = Deno.args[1];
+
+  let target = "javascript";
+
+  if (targetArg) {
+    const [flag, value] = targetArg.split("=");
+    if ((flag === "--target" && value === "javascript") || value === "erlang") {
+      target = value;
+    }
+  }
+
+  console.log(target);
 
   const fileContents = await Deno.readTextFile(gleamFilePath);
 
@@ -21,7 +35,7 @@ const main = async () => {
   const srcDirPath = `${tempProjectPath}/src`;
   await Deno.mkdir(`${tempProjectPath}/src`);
 
-  await Deno.writeTextFile(`${tempProjectPath}/gleam.toml`, GLEAM_TOML);
+  await Deno.writeTextFile(`${tempProjectPath}/gleam.toml`, getToml(target));
   await Deno.writeTextFile(`${srcDirPath}/temp.gleam`, fileContents);
 
   const buildProcess = Deno.run({
